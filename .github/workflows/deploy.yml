@@ -1,0 +1,47 @@
+name: Deploy manual Chery E5
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Construir sitio
+        run: npm run build
+
+      - name: Crear bucket R2 (si no existe)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 bucket create manual-chery-e5
+
+      - name: Subir PDF a R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put r2://manual-chery-e5/manual_liviano.pdf --file static/manual_liviano.pdf --remote --content-type application/pdf
+
+      - name: Quitar el PDF del deploy de Pages (limite 25MB por archivo)
+        run: rm -f build/manual_liviano.pdf
+
+      - name: Deploy sitio a Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy build --project-name=manual-chery-e5 --branch=main
