@@ -1,4 +1,5 @@
 <script>
+	import { base } from '$app/paths';
 	import content from '$lib/data/content.json';
 
 	const stats = {
@@ -24,14 +25,14 @@
 		{stats.imgs} ilustraciones en alta definición
 	</p>
 	<div class="acciones">
-		<a class="btn" href="/buscar">🔍 Buscar en el manual</a>
-		<a class="btn btn2" href="/pdf">📄 Ver PDF completo</a>
+		<a class="btn" href="{base}/buscar">🔍 Buscar en el manual</a>
+		<a class="btn btn2" href="{base}/pdf">📄 Ver PDF completo</a>
 	</div>
 </header>
 
 <section class="grilla">
 	{#each content.chapters as ch (ch.slug)}
-		<a class="card" href="/capitulo/{ch.slug}/">
+		<a class="card" href="{base}/capitulo/{ch.slug}/">
 			<h2>{ch.title}</h2>
 			<p>
 				Págs. {ch.pageStart}–{ch.pageEnd} · {ch.sections.length} secciones ·

@@ -6,7 +6,10 @@ const config = {
 		adapter: adapter({
 			fallback: undefined,
 			strict: true
-		})
+		}),
+		paths: {
+			base: process.env.BASE_PATH || ''
+		}
 	}
 };
 

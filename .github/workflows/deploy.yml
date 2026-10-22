@@ -1,13 +1,25 @@
-name: Deploy manual Chery E5
+name: Deploy a GitHub Pages
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -16,39 +28,21 @@ jobs:
           node-version: 20
           cache: npm
 
+      - uses: actions/configure-pages@v5
+
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Construir sitio
+      - name: Construir sitio (base /manual-chery-e5)
         run: npm run build
+        env:
+          BASE_PATH: /manual-chery-e5
 
-      - name: Crear bucket R2 (si no existe)
-        uses: cloudflare/wrangler-action@v3
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 bucket create manual-chery-e5
+          path: build
 
-      - name: Subir PDF a R2
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 object put r2://manual-chery-e5/manual_liviano.pdf --file static/manual_liviano.pdf --remote --content-type application/pdf
-
-      - name: Quitar el PDF del deploy de Pages (limite 25MB por archivo)
-        run: rm -f build/manual_liviano.pdf
-
-      - name: Crear proyecto Pages (si no existe)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages project create manual-chery-e5 --production-branch=main
-
-      - name: Deploy sitio a Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy build --project-name=manual-chery-e5 --branch=main
+      - name: Desplegar
+        id: deployment
+        uses: actions/deploy-pages@v4

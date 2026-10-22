@@ -1,4 +1,6 @@
 <script>
+	import { base } from '$app/paths';
+
 	export let data;
 	const ch = data.chapter;
 </script>
@@ -8,7 +10,7 @@
 </svelte:head>
 
 <nav class="migas">
-	<a href="/">Inicio</a> <span>/</span> <strong>{ch.title}</strong>
+	<a href={base + '/'}>Inicio</a> <span>/</span> <strong>{ch.title}</strong>
 </nav>
 
 <h1>{ch.title}</h1>
@@ -28,17 +30,17 @@
 {#each ch.pages as page (page.n)}
 	<section class="pagina" id="p{page.n}">
 		<h3>
-			<a href="/pdf" title="Ver en PDF">Página {page.n}</a>
+			<a href={base + '/pdf/'} title="Ver en PDF">Página {page.n}</a>
 		</h3>
 		{#if page.fullpage}
-			<img class="fullpage" src={page.fullpage} alt="Página {page.n} del manual" loading="lazy" />
+			<img class="fullpage" src={base + page.fullpage} alt="Página {page.n} del manual" loading="lazy" />
 			<details>
 				<summary>Texto de la página</summary>
 				{#each page.bloques as b}
 					{#if b.t === 'h4'}
 						<h4>{b.x}</h4>
 					{:else if b.t === 'h5'}
-						<h5>{#if b.icon}<img class="ico" src={b.icon} alt="" loading="lazy" />{/if}{b.x}</h5>
+						<h5>{#if b.icon}<img class="ico" src={base + b.icon} alt="" loading="lazy" />{/if}{b.x}</h5>
 					{:else if b.t === 'p'}
 						<p>{b.x}</p>
 					{:else if b.t === 'ul'}
@@ -50,8 +52,8 @@
 					{:else if b.t === 'callout'}
 					<span class="callout">{b.x}</span>
 				{:else if b.t === 'img'}
-						<a class="figura" href={b.x} target="_blank" rel="noopener">
-							<img src={b.x} alt="Ilustración página {page.n}" loading="lazy" />
+						<a class="figura" href={base + b.x} target="_blank" rel="noopener">
+							<img src={base + b.x} alt="Ilustración página {page.n}" loading="lazy" />
 						</a>
 					{/if}
 				{/each}
@@ -61,7 +63,7 @@
 				{#if b.t === 'h4'}
 					<h4>{b.x}</h4>
 				{:else if b.t === 'h5'}
-					<h5>{#if b.icon}<img class="ico" src={b.icon} alt="" loading="lazy" />{/if}{b.x}</h5>
+					<h5>{#if b.icon}<img class="ico" src={base + b.icon} alt="" loading="lazy" />{/if}{b.x}</h5>
 				{:else if b.t === 'p'}
 					<p>{b.x}</p>
 				{:else if b.t === 'ul'}
@@ -73,8 +75,8 @@
 				{:else if b.t === 'callout'}
 					<span class="callout">{b.x}</span>
 				{:else if b.t === 'img'}
-					<a class="figura" href={b.x} target="_blank" rel="noopener">
-						<img src={b.x} alt="Ilustración página {page.n}" loading="lazy" />
+					<a class="figura" href={base + b.x} target="_blank" rel="noopener">
+						<img src={base + b.x} alt="Ilustración página {page.n}" loading="lazy" />
 					</a>
 				{/if}
 			{/each}

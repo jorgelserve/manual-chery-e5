@@ -1,5 +1,7 @@
 <script>
-	const pdf = '/manual_liviano.pdf';
+	import { base } from '$app/paths';
+
+	const pdf = base + '/manual_liviano.pdf';
 </script>
 
 <svelte:head>

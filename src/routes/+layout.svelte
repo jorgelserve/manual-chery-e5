@@ -1,10 +1,11 @@
 <script>
+	import { base } from '$app/paths';
 	import content from '$lib/data/content.json';
 	let menuAbierto = false;
 </script>
 
 <div class="topbar">
-	<a href="/" class="brand-movil">📘 Chery E5</a>
+	<a href={base + "/"} class="brand-movil">📘 Chery E5</a>
 	<button class="hamburguesa" on:click={() => (menuAbierto = !menuAbierto)} aria-label="Menú">
 		{#if menuAbierto}✕{:else}☰{/if}
 	</button>
@@ -13,16 +14,16 @@
 <div class="app">
 	<aside class:abierto={menuAbierto}>
 		<div class="cabecera-menu">
-			<a href="/" class="brand" on:click={() => (menuAbierto = false)}>📘 Manual Chery E5</a>
+			<a href={base + "/"} class="brand" on:click={() => (menuAbierto = false)}>📘 Manual Chery E5</a>
 			<button class="cerrar" on:click={() => (menuAbierto = false)} aria-label="Cerrar">✕</button>
 		</div>
 		<nav on:click={() => (menuAbierto = false)}>
 			{#each content.chapters as ch (ch.slug)}
-				<a class="cap" href="/capitulo/{ch.slug}/">{ch.title}</a>
+				<a class="cap" href="{base}/capitulo/{ch.slug}/">{ch.title}</a>
 				{#if ch.sections.length > 0}
 					<div class="secs">
 						{#each ch.sections.slice(0, 8) as s}
-							<a href="/capitulo/{ch.slug}/#p{s.page}">{s.title}</a>
+							<a href="{base}/capitulo/{ch.slug}/#p{s.page}">{s.title}</a>
 						{/each}
 						{#if ch.sections.length > 8}
 							<span class="mas">+{ch.sections.length - 8} secciones…</span>
@@ -30,8 +31,8 @@
 					</div>
 				{/if}
 			{/each}
-			<a class="cap" href="/buscar/">🔍 Buscar</a>
-			<a class="cap" href="/pdf/">📄 Ver PDF completo</a>
+			<a class="cap" href="{base}/buscar/">🔍 Buscar</a>
+			<a class="cap" href="{base}/pdf/">📄 Ver PDF completo</a>
 		</nav>
 	</aside>
 	<main>

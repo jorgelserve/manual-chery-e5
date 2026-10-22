@@ -1,4 +1,5 @@
 <script>
+	import { base } from '$app/paths';
 	import MiniSearch from 'minisearch';
 	import { onMount } from 'svelte';
 	import content from '$lib/data/content.json';
@@ -9,7 +10,7 @@
 	let minisearch;
 
 	onMount(async () => {
-		const res = await fetch('/search.json');
+		const res = await fetch(base + '/search.json');
 		const docs = await res.json();
 		minisearch = new MiniSearch({
 			fields: ['text', 'chapter'],
@@ -56,7 +57,7 @@
 	<p class="nota">{resultados.length} página(s) encontradas</p>
 	<div class="res">
 		{#each resultados as r (r.page)}
-			<a class="item" href="/capitulo/{slugDe(r.chapter)}/#p{r.page}">
+			<a class="item" href="{base}/capitulo/{slugDe(r.chapter)}/#p{r.page}">
 				<span class="cap">{r.chapter} · pág. {r.page}</span>
 				{#if r.images.length > 0}
 					<span class="imgs">🖼 {r.images.length} ilustración(es)</span>

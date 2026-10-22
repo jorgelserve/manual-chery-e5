@@ -1,4 +1,5 @@
 import { error } from '@sveltejs/kit';
+	import { base } from '$app/paths';
 import content from '$lib/data/content.json';
 
 export function entries() {
