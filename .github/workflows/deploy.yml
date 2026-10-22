@@ -39,6 +39,13 @@ jobs:
       - name: Quitar el PDF del deploy de Pages (limite 25MB por archivo)
         run: rm -f build/manual_liviano.pdf
 
+      - name: Crear proyecto Pages (si no existe)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create manual-chery-e5 --production-branch=main
+
       - name: Deploy sitio a Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
